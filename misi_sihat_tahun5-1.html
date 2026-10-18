@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Misi Sihat: Rutin Harian Tahun 5</title>
+<style>
+:root{--ink:#193b32;--muted:#5d716b;--green:#23845c;--pale:#e6f6ec;--blue:#eaf3ff;--border:#d8e5dd;--card:#fff;--gold:#fff2cf}
+*{box-sizing:border-box}body{margin:0;background:#f4f8f5;color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:1000px;margin:auto;padding:18px}.hero{border-radius:24px;padding:24px;background:linear-gradient(130deg,#d8f3df,#e0efff);box-shadow:0 8px 24px #244c3410}
+h1{font-size:clamp(1.7rem,4vw,2.5rem);line-height:1.15;margin:12px 0;color:#184a3a}h2{font-size:1.2rem;margin:0 0 8px}h3{margin:0 0 8px}.tag{display:inline-block;background:#e0f2e8;color:#205b43;border-radius:8px;padding:4px 9px;font-size:.78rem;font-weight:800}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin:14px 0}.pill{border:1px solid #bfd9ca;border-radius:999px;padding:7px 12px;background:#ffffffa8;font-size:.9rem}
+.panel{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px;margin-top:16px;box-shadow:0 4px 15px #244c3408}
+.muted{color:var(--muted)}.progress{height:10px;border-radius:99px;background:#dce9e0;overflow:hidden}.progress span{display:block;height:100%;background:#45a77a;width:0;transition:width .25s}
+.map{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin-top:12px}.mission-button{border:1px solid var(--border);background:#fff;border-radius:13px;padding:10px 7px;cursor:pointer;min-height:92px;color:var(--ink);overflow-wrap:anywhere}.mission-button.active{border:2px solid var(--green);background:var(--pale)}.mission-button .emoji{font-size:1.6rem}.mission-button small{display:block;color:var(--muted);margin-top:3px}
+.row{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}.scene{text-align:center;font-size:clamp(3rem,10vw,5rem);line-height:1.4;margin:12px 0}.choices{display:grid;gap:9px;margin-top:10px}.choice{padding:12px 14px;text-align:left;border:1px solid var(--border);border-radius:12px;background:white;color:var(--ink);font:inherit;cursor:pointer;min-height:48px}.choice:hover:not(:disabled){border-color:var(--green);background:#f1faf4}.choice:focus-visible,button:focus-visible{outline:3px solid #2379c9;outline-offset:3px}.choice:disabled{cursor:default;opacity:.94}.choice.good{border-color:#23845c;background:#e6f6ec}.choice.bad{border-color:#c98a25;background:#fff5df}
+.primary,.secondary{min-height:44px;padding:10px 15px;border-radius:11px;font-weight:750;font:inherit;cursor:pointer}.primary{background:var(--green);border:1px solid var(--green);color:white}.primary:disabled{opacity:.45;cursor:not-allowed}.secondary{border:1px solid var(--border);background:white;color:var(--ink)}
+.science{background:var(--blue);border-radius:13px;padding:14px;margin-top:12px;color:#234d72}.feedback{margin-top:12px}.feedback .box{padding:13px;border-radius:12px;background:var(--pale);border:1px solid #b7ddc6}.feedback .box.wrong{background:var(--gold);border-color:#e7d19a;color:#714b14}
+.stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:12px}.stat{background:#f7faf8;border:1px solid var(--border);border-radius:13px;padding:12px;min-width:0}.stat strong{display:block;font-size:1.6rem;overflow-wrap:anywhere}.stat span{font-size:.86rem;color:var(--muted)}
+.skill{margin:12px 0}.skill-label{display:flex;justify-content:space-between;gap:8px;font-size:.9rem;margin-bottom:5px}.skillbar{height:8px;background:#e1eae4;border-radius:20px;overflow:hidden}.skillbar span{display:block;background:#45a77a;height:100%;width:0}
+footer{font-size:.88rem;color:var(--muted);padding:18px 2px}
+@media(max-width:650px){main{padding:12px}.hero{padding:18px}.map{grid-template-columns:repeat(2,minmax(0,1fr))}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.panel{padding:14px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main id="app">
+  <header class="hero">
+    <div class="row"><span class="tag">PENDIDIKAN KESIHATAN • TAHUN 5</span><strong id="badge">🌟 Pelatih Sihat</strong></div>
+    <div class="scene" aria-hidden="true">🌞 🧒🏻 🪥</div>
+    <h1>Misi Sihat: Sehari Jadi Hebat!</h1>
+    <p>Urus diri dari bangun tidur hingga waktu tidur. Pilih amalan yang betul, kumpul mata dan bongkar rahsia sains tubuh manusia!</p>
+    <div class="pills"><span class="pill">⭐ <b id="points">0</b> mata</span><span class="pill">✅ <b id="done">0</b>/8 misi</span><span class="pill">🧠 <b id="correct">0</b> jawapan tepat</span></div>
+    <div class="progress"><span id="overall"></span></div><p id="progressText" class="muted">Perjalanan sihat baru bermula!</p>
+  </header>
+
+  <section class="panel">
+    <div class="row"><h2>🗺️ Peta rutin harian</h2><button id="sound" class="secondary" type="button" aria-pressed="false">🔇 Bunyi: tutup</button></div>
+    <p class="muted">Pilih satu misi mengikut perjalanan harian.</p>
+    <div id="missionMap" class="map"></div>
+  </section>
+
+  <section class="panel" aria-labelledby="missionTitle">
+    <div class="row"><span id="phase" class="tag">MISI 1 / 8</span><strong id="clock">🕒 6:30 pagi</strong></div>
+    <h2 id="missionTitle" style="font-size:1.5rem;margin-top:14px">Bangun dengan segar</h2>
+    <div id="scene" class="scene" aria-hidden="true">🛏️ 🌤️</div>
+    <p id="story"></p>
+    <h3>Apakah tindakan terbaik?</h3>
+    <div id="choices" class="choices" role="group" aria-label="Pilihan tindakan"></div>
+    <div id="feedback" class="feedback" aria-live="polite"></div>
+    <div id="science" class="science" aria-live="polite"><strong>🔬 Sudut sains</strong><p>Pilih tindakan untuk mengetahui sebab saintifik di sebalik amalan sihat.</p></div>
+    <div class="row" style="justify-content:flex-start;margin-top:14px"><button id="next" class="primary" type="button" disabled>Misi seterusnya →</button><button id="explain" class="secondary" type="button">💡 Petunjuk</button></div>
+    <p id="hint" class="muted" hidden></p>
+  </section>
+
+  <section class="panel">
+    <h2>📊 Papan pemantauan kesihatan</h2><p class="muted">Statistik berubah berdasarkan pilihan dan jawapan kamu.</p>
+    <div class="stats">
+      <div class="stat"><span>Mata terkumpul</span><strong id="sPoints">0</strong><span>daripada 160</span></div>
+      <div class="stat"><span>Misi selesai</span><strong id="sDone">0/8</strong><span>rutin harian</span></div>
+      <div class="stat"><span>Ketepatan kuiz</span><strong id="accuracy">—</strong><span>jawapan pertama</span></div>
+      <div class="stat"><span>Pengetahuan sains</span><strong id="sScience">0/8</strong><span>penerangan diteroka</span></div>
+    </div>
+    <h3 style="margin-top:18px">Kemahiran yang dipelajari</h3><div id="skillBars"></div>
+    <div id="result" aria-live="polite"></div>
+    <button id="restart" class="secondary" type="button" style="margin-top:12px">↻ Mula semula simulasi</button>
+  </section>
+  <footer>Nota kesihatan: Ini panduan umum. Keperluan tidur, pemakanan, aktiviti dan penjagaan diri boleh berbeza mengikut individu. Jika mempunyai masalah kesihatan atau keperluan khusus, dapatkan panduan ibu bapa, penjaga atau petugas kesihatan.</footer>
+</main>
+<script>
+(() => {
+'use strict';
+const $ = id => document.getElementById(id);
+const missions = [
+ {title:'Bangun dengan segar',time:'6:30 pagi',icon:'🛏️ 🌤️',story:'Hari baharu bermula! Kamu bangun untuk ke sekolah. Badan memerlukan rehat yang cukup dan permulaan hari yang teratur.',q:'Apakah tindakan terbaik selepas bangun tidur?',opts:['Bangun, kemaskan tempat tidur dan ke tandas','Terus bermain telefon sehingga lewat','Langkau semua rutin pagi dan bergegas'],correct:0,why:'Mulakan hari dengan teratur, gunakan tandas apabila perlu dan bersedia untuk kebersihan diri.',science:'Tidur membantu otak memproses maklumat dan menyokong perhatian, pembelajaran serta pemulihan badan. Kebanyakan kanak-kanak berumur 6–12 tahun memerlukan 9–12 jam tidur setiap 24 jam.',hint:'Fikirkan cara yang membantu badan dan minda bersedia untuk hari baharu.',skill:'Rutin & rehat'},
+ {title:'Misi kebersihan diri',time:'6:45 pagi',icon:'🪥 🧼 🚿',story:'Sebelum ke sekolah, kamu perlu menjaga gigi, badan, rambut, tangan dan pakaian.',q:'Pilih cara penjagaan diri yang betul.',opts:['Mandi, pakai pakaian bersih, cuci tangan dan gosok gigi dengan ubat gigi berfluorida','Sembur pewangi sahaja tanpa mandi atau menukar pakaian','Berkongsi berus gigi supaya lebih mudah'],correct:0,why:'Mandi dan pakaian bersih membantu mengurus peluh serta kotoran. Gosok gigi dua kali sehari dengan ubat gigi berfluorida. Jangan berkongsi berus gigi.',science:'Sabun membantu menanggalkan minyak, kotoran dan mikroorganisma dari kulit. Fluorida menguatkan enamel gigi dan membantu mencegah kerosakan gigi. Rambut, kuku, kaki dan kawasan luar telinga juga perlu dijaga dengan cara yang sesuai.',hint:'Pilih tindakan yang membersihkan badan, gigi dan pakaian tanpa berkongsi barangan peribadi.',skill:'Kebersihan diri'},
+ {title:'Sarapan juara',time:'7:15 pagi',icon:'🥚 🍞 🍌',story:'Sebelum belajar, kamu memilih sarapan supaya mempunyai tenaga dan dapat menumpukan perhatian.',q:'Sarapan manakah lebih seimbang?',opts:['Nasi atau roti, telur atau sumber protein lain, buah dan air kosong','Minuman manis sahaja','Makanan ringan sahaja tanpa air'],correct:0,why:'Gabungan makanan berkarbohidrat, protein dan buah membantu membekalkan tenaga serta pelbagai nutrien.',science:'Karbohidrat diuraikan menjadi glukosa yang digunakan sel sebagai sumber tenaga. Protein membekalkan asid amino untuk pertumbuhan dan pembaikan tisu. Buah membekalkan vitamin, mineral dan serat. Air membantu mengawal suhu badan serta mengangkut bahan dalam badan.',hint:'Cari hidangan yang menggabungkan beberapa kumpulan makanan dan minuman yang sesuai.',skill:'Pemakanan & air'},
+ {title:'Sekolah bersih, badan sihat',time:'10:00 pagi',icon:'🧴 👐 🏫',story:'Selepas menggunakan tandas atau sebelum makan, kamu perlu mengelakkan penyebaran kuman.',q:'Bagaimanakah cara mencuci tangan yang betul?',opts:['Basahkan tangan, gunakan sabun, gosok semua permukaan sekurang-kurangnya 20 saat, bilas dan keringkan','Bilas hujung jari sekejap tanpa sabun dalam semua keadaan','Lap tangan pada baju dan terus makan'],correct:0,why:'Sabun, geseran, bilasan dan pengeringan yang betul membantu menyingkirkan kotoran dan mengurangkan penyebaran kuman.',science:'Mikroorganisma boleh berpindah melalui tangan ke makanan, mata, hidung dan mulut. Cuci tangan menggunakan sabun sekurang-kurangnya 20 saat, khususnya selepas menggunakan tandas dan sebelum makan. Jika sabun dan air tiada, pensanitasi tangan yang sesuai boleh digunakan dengan pengawasan orang dewasa.',hint:'Ingat bahawa mencuci tangan melibatkan lebih daripada sekadar membasahkan jari.',skill:'Pencegahan penyakit'},
+ {title:'Rehat aktif',time:'12:30 tengah hari',icon:'🏃‍♀️ ⚽ 💧',story:'Waktu rehat tiba. Kamu mahu bergerak, bermain dengan selamat dan minum air.',q:'Apakah pilihan terbaik untuk rehat yang sihat?',opts:['Bermain secara aktif dengan selamat, berehat apabila perlu dan minum air','Duduk sepanjang hari tanpa bergerak','Terus bersukan walaupun pening atau terlalu letih'],correct:0,why:'Aktiviti fizikal menyokong kesihatan jantung, otot dan tulang. Rehat dan air membantu mengurus keperluan badan.',science:'Semasa aktiviti, otot menggunakan lebih banyak tenaga dan jantung mengepam darah dengan lebih cepat. Aktiviti fizikal berkala membantu kecergasan, kekuatan tulang dan kesejahteraan emosi. Kanak-kanak disaran mengumpulkan purata sekurang-kurangnya 60 minit aktiviti fizikal sederhana hingga lasak sehari. Berhenti dan beritahu orang dewasa jika berasa tidak sihat.',hint:'Gabungkan pergerakan, keselamatan dan keperluan badan untuk berehat.',skill:'Aktiviti fizikal'},
+ {title:'Pulang dan segarkan diri',time:'2:30 petang',icon:'🏡 🧦 🧼',story:'Selepas pulang dari sekolah dan bermain, badan berpeluh dan pakaian mungkin kotor.',q:'Apakah rutin yang sesuai selepas aktiviti luar?',opts:['Mandi jika perlu, tukar pakaian berpeluh, bersihkan kaki dan minum air','Kekalkan pakaian lembap sepanjang petang','Pakai kasut dan stoking yang lembap tanpa menukarnya'],correct:0,why:'Membersihkan badan dan menukar pakaian membantu keselesaan. Pastikan kaki dikeringkan, terutama di celah jari, sebelum memakai stoking bersih.',science:'Peluh membantu menyejukkan badan apabila menyejat dari kulit. Kelembapan yang terperangkap pada kaki boleh menyebabkan kulit mudah mengalami iritasi dan sesetengah jangkitan kulat. Gunakan tuala dan pakaian sendiri; jaga kawasan kemaluan secara luaran dengan lembut, tanpa bahan pewangi atau cucian dalaman yang boleh merengsakan.',hint:'Pertimbangkan peluh, kelembapan pada kaki dan kebersihan pakaian selepas bermain.',skill:'Penjagaan badan'},
+ {title:'Makan malam seimbang',time:'7:00 malam',icon:'🍚 🥦 🐟',story:'Keluarga menyediakan makan malam. Kamu belajar memilih makanan dan menjaga kebersihan makanan.',q:'Apakah amalan paling baik ketika makan?',opts:['Makan pelbagai makanan, basuh tangan dan pastikan makanan disediakan dengan bersih','Makan hanya satu jenis makanan setiap hari','Biarkan makanan mudah rosak lama pada suhu bilik'],correct:0,why:'Kepelbagaian makanan membantu memenuhi keperluan nutrien. Kebersihan tangan, peralatan dan penyimpanan makanan mengurangkan risiko keracunan makanan.',science:'Tubuh memerlukan pelbagai nutrien untuk menghasilkan tenaga, membina tisu dan menyokong sistem imun. Serat membantu fungsi usus. Mikroorganisma tertentu boleh membiak pada makanan yang disimpan secara tidak selamat; asingkan makanan mentah daripada makanan sedia dimakan dan simpan makanan mudah rosak dengan betul.',hint:'Fikirkan kepelbagaian nutrien dan langkah yang mengurangkan pencemaran makanan.',skill:'Pemakanan selamat'},
+ {title:'Bersedia untuk tidur',time:'8:30 malam',icon:'🛁 📚 🌙',story:'Sebelum tidur, kamu mahu menutup hari dengan rutin kebersihan, persediaan sekolah dan rehat yang cukup.',q:'Apakah rutin malam yang paling sesuai?',opts:['Gosok gigi, bersedia untuk esok, kurangkan skrin dan tidur pada waktu teratur','Minum minuman berkafein dan bermain skrin sehingga lewat','Tidur tanpa membersihkan gigi selepas makan malam'],correct:0,why:'Rutin malam membantu menjaga gigi, mengurangkan gangguan sebelum tidur dan membina tabiat tidur yang konsisten.',science:'Cahaya dan kandungan skrin boleh membuatkan sesetengah orang lebih sukar bersedia untuk tidur. Jadual tidur yang konsisten membantu jam biologi badan. Kanak-kanak sekolah rendah lazimnya memerlukan 9–12 jam tidur sehari; waktu tidur perlu disesuaikan dengan waktu bangun.',hint:'Pilih amalan yang menjaga gigi dan menyediakan tubuh serta minda untuk tidur.',skill:'Tidur & pemulihan'}
+];
+let current=0, points=0, correct=0, done=new Set(), scienceSeen=new Set(), firstResults={}, soundOn=false, audioContext=null;
+function beep(freq=650,duration=.09){if(!soundOn)return;try{audioContext=audioContext||new(window.AudioContext||window.webkitAudioContext)();const o=audioContext.createOscillator(),g=audioContext.createGain();o.frequency.value=freq;o.connect(g);g.connect(audioContext.destination);g.gain.value=.04;o.start();o.stop(audioContext.currentTime+duration)}catch(e){}}
+function renderMap(){
+ $('missionMap').innerHTML=missions.map((m,i)=>`<button type="button" class="mission-button ${i===current?'active':''}" data-go="${i}" aria-label="Misi ${i+1}: ${m.title}"><span class="emoji">${m.icon.split(' ')[0]}</span><br><b>${i+1}. ${m.title}</b><small>${done.has(i)?'✓ Selesai':i===current?'Sedang dimainkan':'Belum selesai'}</small></button>`).join('');
+ $('missionMap').querySelectorAll('[data-go]').forEach(b=>b.addEventListener('click',()=>{current=Number(b.dataset.go);renderMission()}));
+}
+function renderMission(){
+ const m=missions[current];$('phase').textContent=`MISI ${current+1} / ${missions.length}`;$('clock').textContent='🕒 '+m.time;$('missionTitle').textContent=m.title;$('scene').textContent=m.icon;$('story').textContent=m.story;
+ $('science').innerHTML='<strong>🔬 Sudut sains</strong><p>Pilih tindakan untuk mengetahui sebab saintifik di sebalik amalan sihat.</p>';$('feedback').innerHTML='';$('hint').hidden=true;$('next').disabled=true;$('next').textContent=current===missions.length-1?'Lihat keputusan 🏆':'Misi seterusnya →';
+ $('choices').innerHTML=m.opts.map((o,i)=>`<button type="button" class="choice" data-choice="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('');
+ $('choices').querySelectorAll('[data-choice]').forEach(b=>b.addEventListener('click',()=>choose(Number(b.dataset.choice))));
+ if(done.has(current))showCompleted();renderMap();updateStats();
+}
+function choose(n){
+ if(done.has(current))return;const m=missions[current],ok=n===m.correct;
+ if(!(current in firstResults)){firstResults[current]=ok;if(ok)correct++}
+ points+=ok?20:5;done.add(current);scienceSeen.add(current);
+ $('feedback').innerHTML=`<div class="box ${ok?'':'wrong'}"><strong>${ok?'🌟 Hebat! +20 mata':'💪 Terus belajar! +5 mata'}</strong><p>${m.why}</p></div>`;
+ $('science').innerHTML='<strong>🔬 Mengapa ini penting?</strong><p>'+m.science+'</p>';
+ $('choices').querySelectorAll('button').forEach((b,i)=>{b.disabled=true;if(i===m.correct)b.classList.add('good');if(i===n&&!ok)b.classList.add('bad')});
+ $('next').disabled=false;beep(ok?850:350,.12);if(ok)setTimeout(()=>beep(1050,.1),100);renderMap();updateStats();
+}
+function showCompleted(){const m=missions[current];$('feedback').innerHTML='<div class="box"><strong>✓ Misi ini sudah selesai.</strong><p>'+m.why+'</p></div>';$('science').innerHTML='<strong>🔬 Sudut sains</strong><p>'+m.science+'</p>';$('choices').querySelectorAll('button').forEach(b=>b.disabled=true);$('next').disabled=false;scienceSeen.add(current)}
+function updateStats(){
+ const d=done.size,p=Math.round(d/missions.length*100),n=Object.keys(firstResults).length,a=n?Math.round(correct/n*100):0;
+ $('points').textContent=points;$('done').textContent=d;$('correct').textContent=correct;$('overall').style.width=p+'%';$('progressText').textContent=d===8?'Semua misi selesai! Kamu wira kesihatan!':p+'% perjalanan selesai';
+ $('sPoints').textContent=points;$('sDone').textContent=d+'/8';$('accuracy').textContent=n?a+'%':'—';$('sScience').textContent=scienceSeen.size+'/8';$('badge').textContent=d===8?'🏆 Wira Kesihatan':points>=60?'🌟 Pelatih Cemerlang':'🌟 Pelatih Sihat';
+ $('skillBars').innerHTML=missions.map((m,i)=>`<div class="skill"><div class="skill-label"><span>${m.skill}</span><span>${done.has(i)?'Dikuasai':'Belum diteroka'}</span></div><div class="skillbar"><span style="width:${done.has(i)?100:0}%"></span></div></div>`).join('');
+ $('result').innerHTML=d===8?`<div class="science"><strong>🏆 Tahniah, Wira Kesihatan!</strong><p>Kamu memperoleh ${points} mata daripada 160. Ketepatan jawapan pertama: ${a}%. Kamu telah meneroka ${scienceSeen.size} penerangan sains. Cuba terangkan satu tabiat yang akan kamu amalkan setiap hari.</p></div>`:'';
+}
+$('next').addEventListener('click',()=>{if(done.size===8){$('result').scrollIntoView({behavior:'smooth',block:'nearest'});return}for(let step=1;step<=missions.length;step++){const i=(current+step)%missions.length;if(!done.has(i)){current=i;renderMission();return}}});
+$('explain').addEventListener('click',()=>{$('hint').hidden=!$('hint').hidden;$('hint').textContent='Petunjuk: '+missions[current].hint});
+$('sound').addEventListener('click',()=>{soundOn=!soundOn;$('sound').textContent=soundOn?'🔊 Bunyi: buka':'🔇 Bunyi: tutup';$('sound').setAttribute('aria-pressed',String(soundOn));beep(700,.08)});
+$('restart').addEventListener('click',()=>{current=0;points=0;correct=0;done=new Set();scienceSeen=new Set();firstResults={};renderMission();$('result').innerHTML='';});
+renderMission();
+})();
+</script>
+</body>
+</html>
